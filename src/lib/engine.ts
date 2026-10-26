@@ -1,6 +1,6 @@
 import { randomUUID } from "crypto";
 import type { AgentRecord, RunRecord, RunStepResult } from "./agent-schema";
-import { findService } from "./services";
+import { findService, GATEWAY_ORIGIN, SERVICE_ALLOWLIST } from "./services";
 import { buyGatewayCall } from "./x402pay";
 import { listRuns, spentTodayUsd } from "./store";
 
@@ -87,7 +87,25 @@ export async function executeRun(agent: AgentRecord, mode: "dry-run" | "live", i
         continue;
       }
 
-      if (step.tool === "sqd-lookup" || step.tool === "buy-gateway") {
+      if (step.tool === "catalog-fetch") {
+        // Real, free, live: GET the verified buy gateway catalog.
+        const res = await fetch(`${GATEWAY_ORIGIN}/v1/catalog`, { signal: AbortSignal.timeout(15000) });
+        if (!res.ok) throw new Error(`Catalog fetch failed (${res.status}). Paid steps blocked until discovery succeeds.`);
+        const catalog = (await res.json()) as { capabilities?: { id: string; available?: boolean }[] };
+        const avail = (catalog.capabilities || []).filter((c) => c.available !== false).length;
+        const total = (catalog.capabilities || []).length;
+        sr.output = mode === "dry-run"
+          ? `[DRY-RUN simulated] Would GET ${GATEWAY_ORIGIN}/v1/catalog (free). Live catalog currently lists ${total} capabilities.`
+          : `Live catalog fetched: ${avail}/${total} capabilities available. Paid step will use the 402 challenge as price authority.`;
+        sr.serviceId = step.serviceId;
+        sr.priceUsd = 0;
+        sr.paymentStatus = mode === "dry-run" ? "dry-run-simulated" : "no-payment-needed";
+        sr.status = "ok";
+        sr.finishedAt = new Date().toISOString();
+        continue;
+      }
+
+      if (step.tool === "buy-gateway") {
         const svc = step.serviceId ? findService(step.serviceId) : undefined;
         if (!svc) throw new Error(`Allowlist violation: unknown service ${step.serviceId}.`);
         const price = svc.indicativePriceUsd ?? step.estimatedCostUsd;

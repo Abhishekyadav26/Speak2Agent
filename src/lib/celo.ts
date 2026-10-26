@@ -32,11 +32,14 @@ export function attributionTag(): string {
   return process.env.HACKATHON_ATTRIBUTION_TAG || process.env.NEXT_PUBLIC_HACKATHON_ATTRIBUTION_TAG || "";
 }
 
-// ERC-8004 registry addresses are chain-specific and NOT guessed here.
-// Fill via env once the official deployment for the chosen chain is confirmed.
+// ERC-8004 registries. Celo mainnet (42220) addresses VERIFIED 2026-10-26 from
+// the live buy gateway catalog trust block (https://gateway.usebuy.ai/v1/catalog).
+// Celo Sepolia registry is not published in the catalog — env override only.
 export function erc8004Registries() {
   return {
-    identityRegistry: process.env.NEXT_PUBLIC_ERC8004_IDENTITY_REGISTRY || "",
-    reputationRegistry: process.env.NEXT_PUBLIC_ERC8004_REPUTATION_REGISTRY || "",
+    identityRegistry:
+      process.env.NEXT_PUBLIC_ERC8004_IDENTITY_REGISTRY || "0x8004A169FB4a3325136EB29fA0ceB6D2e539a432",
+    reputationRegistry:
+      process.env.NEXT_PUBLIC_ERC8004_REPUTATION_REGISTRY || "0x8004BAa17C55a88189AE136b182e5fdA19dE9b63",
   };
 }

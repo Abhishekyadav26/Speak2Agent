@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Speak2Agent: payment keystores + local run data must never be committed
+.buy-keystore/
+data/
+!.env.example

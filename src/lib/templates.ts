@@ -56,18 +56,18 @@ export function requestToBlueprint(request: string): AgentBlueprint {
 
   const plans: Record<TemplateId, AgentBlueprint["plan"]> = {
     "onchain-research": [
-      { id: "s1", title: "Fetch free chain data", detail: "Query SQD free transaction/block lookups for the target wallet or token.", tool: "sqd-lookup", serviceId: "sqd-tx-lookup", estimatedCostUsd: 0, requiresApproval: false },
-      { id: "s2", title: "Buy enrichment data", detail: "If free data is insufficient, purchase one bounded gateway call (e.g. X posts search) within budget.", tool: "buy-gateway", serviceId: "x-posts-search", estimatedCostUsd: 0.05, requiresApproval: true },
+      { id: "s1", title: "Fetch live gateway catalog (free)", detail: "GET the verified buy catalog to confirm which onchain/social capabilities are available right now.", tool: "catalog-fetch", serviceId: "gateway-catalog", estimatedCostUsd: 0, requiresApproval: false },
+      { id: "s2", title: "Buy enrichment data", detail: "If free data is insufficient, purchase one bounded gateway call (e.g. X posts search, live-quoted ~$0.005) within budget.", tool: "buy-gateway", serviceId: "x-posts-search", estimatedCostUsd: 0.005, requiresApproval: true },
       { id: "s3", title: "Analyze & report", detail: "Summarize suspicious patterns and produce a daily report.", tool: "local-analysis", serviceId: null, estimatedCostUsd: 0, requiresApproval: false },
     ],
     "contract-assistant": [
       { id: "s1", title: "Compile & review locally", detail: "Compile Solidity 0.8.24 in the worker and run static checks.", tool: "solc-worker", serviceId: null, estimatedCostUsd: 0, requiresApproval: false },
-      { id: "s2", title: "Buy external analysis", detail: "Purchase one bounded external analysis call when local checks are inconclusive.", tool: "buy-gateway", serviceId: "browser-read", estimatedCostUsd: 0.1, requiresApproval: true },
+      { id: "s2", title: "Buy external analysis", detail: "Purchase one bounded external call (1-min browser session) when local checks are inconclusive.", tool: "buy-gateway", serviceId: "browser-session-1min", estimatedCostUsd: 0.004, requiresApproval: true },
       { id: "s3", title: "Report findings", detail: "Return findings with references to code locations.", tool: "local-analysis", serviceId: null, estimatedCostUsd: 0, requiresApproval: false },
     ],
     "web-research": [
-      { id: "s1", title: "Plan queries", detail: "Derive 2-3 bounded search queries from the topic.", tool: "local-analysis", serviceId: null, estimatedCostUsd: 0, requiresApproval: false },
-      { id: "s2", title: "Buy data call", detail: "Execute one paid gateway search (X or LinkedIn) within budget.", tool: "buy-gateway", serviceId: "x-posts-search", estimatedCostUsd: 0.05, requiresApproval: true },
+      { id: "s1", title: "Fetch live gateway catalog (free)", detail: "GET the verified buy catalog to confirm which research capabilities are available right now.", tool: "catalog-fetch", serviceId: "gateway-catalog", estimatedCostUsd: 0, requiresApproval: false },
+      { id: "s2", title: "Buy data call", detail: "Execute one paid gateway search (LinkedIn company posts) within budget.", tool: "buy-gateway", serviceId: "linkedin-company-posts", estimatedCostUsd: 0.02, requiresApproval: true },
       { id: "s3", title: "Summarize", detail: "Summarize findings with sources and timestamps.", tool: "local-analysis", serviceId: null, estimatedCostUsd: 0, requiresApproval: false },
     ],
   };

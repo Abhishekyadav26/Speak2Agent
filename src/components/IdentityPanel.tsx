@@ -6,7 +6,7 @@ export default function IdentityPanel({ network, attribution }: { network: strin
   const [wallet, setWallet] = useState("");
   const [name, setName] = useState("Speak2Agent");
   const [agentId, setAgentId] = useState<string | null>(null);
-  const registry = process.env.NEXT_PUBLIC_ERC8004_IDENTITY_REGISTRY || "";
+  const registry = process.env.NEXT_PUBLIC_ERC8004_IDENTITY_REGISTRY || "0x8004A169FB4a3325136EB29fA0ceB6D2e539a432"; // Celo mainnet, verified from live gateway catalog
 
   async function connect() {
     const eth = (window as unknown as { ethereum?: { request: (a: { method: string; params?: unknown }) => Promise<string[]> } }).ethereum;

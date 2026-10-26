@@ -15,11 +15,11 @@ function agent(over: Partial<AgentRecord> = {}): AgentRecord {
     template: "onchain-research",
     trigger: "manual",
     plan: [
-      { id: "s1", title: "Free lookup", detail: "d", tool: "sqd-lookup", serviceId: "sqd-tx-lookup", estimatedCostUsd: 0, requiresApproval: false },
+      { id: "s1", title: "Free lookup", detail: "d", tool: "catalog-fetch", serviceId: "gateway-catalog", estimatedCostUsd: 0, requiresApproval: false },
       { id: "s2", title: "Local summary", detail: "d", tool: "local-analysis", serviceId: null, estimatedCostUsd: 0, requiresApproval: false },
     ],
-    tools: ["sqd-lookup", "local-analysis"],
-    serviceIds: ["sqd-tx-lookup"],
+    tools: ["catalog-fetch", "local-analysis"],
+    serviceIds: ["gateway-catalog"],
     estCostPerRunUsd: 0,
     maxPerOperationUsd: 0.25,
     maxPerDayUsd: 0.5,
@@ -101,9 +101,19 @@ describe("service allowlist", () => {
       expect(findService(s.id)).toBeDefined();
     }
   });
+  it("parses the real x402 v1 JSON-body challenge", () => {
+    const body = JSON.stringify({
+      x402Version: 1,
+      accepts: [{ scheme: "exact", network: "celo", maxAmountRequired: "5000", payTo: "0x20faAca5F980E29639A0FCC6dcA6988E18ed333B", asset: "0xcebA9300f2b948710d2653dD7B07f33A8B32118C" }],
+    });
+    const res = new Response(body, { status: 402 });
+    const c = parsePaymentRequired(res, body);
+    expect(c?.priceUsd).toBeCloseTo(0.005);
+    expect(c?.payTo).toMatch(/^0x/);
+  });
   it("returns null for unparseable 402", () => {
     const res = new Response("pay", { status: 402 });
-    expect(parsePaymentRequired(res)).toBeNull();
+    expect(parsePaymentRequired(res, "pay")).toBeNull();
   });
 });
 

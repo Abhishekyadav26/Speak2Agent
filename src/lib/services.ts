@@ -30,10 +30,10 @@ export const SERVICE_ALLOWLIST: GatewayService[] = [
   {
     id: "x-posts-search",
     name: "X Posts Search (paid)",
-    description: "Search public X posts by keyword. Request example verified in the official @celo/buy README.",
+    description: "Search public X posts by keyword. Live 402 quotes $0.005 (5000 atomic USDC).",
     method: "POST",
     path: "/v1/social/x/posts/search",
-    indicativePriceUsd: 0.05,
+    indicativePriceUsd: 0.005,
     exampleBody: { query: "celo" },
   },
   {
@@ -51,7 +51,7 @@ export const SERVICE_ALLOWLIST: GatewayService[] = [
     description: "Recent public posts for a LinkedIn company. Used by the web-research template.",
     method: "POST",
     path: "/v1/social/linkedin/company/posts",
-    indicativePriceUsd: 0.05,
+    indicativePriceUsd: 0.02,
     exampleBody: { slug: "celo" },
   },
 ];
