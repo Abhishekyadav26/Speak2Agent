@@ -1,0 +1,69 @@
+[
+  {
+    "name": "Celo Watch Agent",
+    "description": "Agent requested: \"Create a blockchain research agent that tracks a wallet. Keep spending below $0.50 per day.\". Built from template onchain-research.",
+    "objective": "Create a blockchain research agent that tracks a wallet. Keep spending below $0.50 per day.",
+    "template": "onchain-research",
+    "trigger": "manual",
+    "plan": [
+      {
+        "id": "s1",
+        "title": "Fetch free chain data",
+        "detail": "Query SQD free transaction/block lookups for the target wallet or token.",
+        "tool": "sqd-lookup",
+        "serviceId": "sqd-tx-lookup",
+        "estimatedCostUsd": 0,
+        "requiresApproval": false
+      },
+      {
+        "id": "s2",
+        "title": "Buy enrichment data",
+        "detail": "If free data is insufficient, purchase one bounded gateway call (e.g. X posts search) within budget.",
+        "tool": "buy-gateway",
+        "serviceId": "x-posts-search",
+        "estimatedCostUsd": 0.05,
+        "requiresApproval": true
+      },
+      {
+        "id": "s3",
+        "title": "Analyze & report",
+        "detail": "Summarize suspicious patterns and produce a daily report.",
+        "tool": "local-analysis",
+        "serviceId": null,
+        "estimatedCostUsd": 0,
+        "requiresApproval": false
+      }
+    ],
+    "tools": [
+      "sqd-lookup",
+      "buy-gateway",
+      "local-analysis"
+    ],
+    "serviceIds": [
+      "sqd-tx-lookup",
+      "x-posts-search"
+    ],
+    "estCostPerRunUsd": 0.05,
+    "maxPerOperationUsd": 0.25,
+    "maxPerDayUsd": 0.5,
+    "network": "testnet",
+    "stablecoins": [
+      "USDC"
+    ],
+    "permissions": [
+      "read-public-data",
+      "paid-gateway-within-budget"
+    ],
+    "retryPolicy": {
+      "maxRetries": 1,
+      "idempotencyKey": true
+    },
+    "needsClarification": null,
+    "id": "smoke1",
+    "status": "READY",
+    "createdAt": "2026-10-26T18:12:09.465Z",
+    "updatedAt": "2026-10-26T18:12:09.465Z",
+    "approvedAt": "2026-10-26T18:12:09Z",
+    "approvedMaxPerOperationUsd": 0.25
+  }
+]
