@@ -44,3 +44,15 @@ next-env.d.ts
 .buy-keystore/
 data/
 !.env.example
+
+# Impeccable design skills (per-harness installs, incl. duplicated engine binaries)
+.agent/
+.agents/
+.claude/
+.codex/
+.cursor/
+.gemini/
+.grok/
+.hermes/
+.opencode/
+.pi/
