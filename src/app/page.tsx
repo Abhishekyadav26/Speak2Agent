@@ -103,6 +103,7 @@ export default function Home() {
   }
 
   const totalSpent = runs.filter((r) => r.mode === "live" && r.status === "succeeded").reduce((a, r) => a + r.totalSpentUsd, 0);
+  const explorer = network === "mainnet" ? "https://explorer.celo.org" : "https://celo-sepolia.blockscout.com";
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-6 text-zinc-100">
@@ -211,7 +212,14 @@ export default function Home() {
                     </span> {s.title}
                     {s.priceUsd != null && <span className="text-zinc-400"> · ${s.priceUsd}</span>}
                     {s.paymentStatus && <span className="text-zinc-400"> · {s.paymentStatus}</span>}
-                    {s.txHash && <span className="text-emerald-300"> · tx {s.txHash}</span>}
+                    {s.txHash && (
+                      <span className="text-emerald-300">
+                        {" "}· tx{" "}
+                        <a href={`${explorer}/tx/${s.txHash}`} target="_blank" rel="noreferrer" className="underline hover:text-emerald-200">
+                          {s.txHash.slice(0, 10)}…
+                        </a>
+                      </span>
+                    )}
                     {typeof s.output === "string" && <span className="block text-zinc-400">{s.output.slice(0, 300)}</span>}
                     {s.error && <span className="block text-red-300">{s.error}</span>}
                   </li>

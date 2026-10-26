@@ -1,6 +1,14 @@
 // Speak2Agent — Celo network + x402 configuration.
-// Values follow official docs: https://x402.celo.org and the @celo/buy README.
-// Never hardcode guessed contracts; registry addresses stay configurable.
+// Corrected/verified against LIVE chain data on 2026-10-26:
+// - celo-mcp get_network_status → Celo Mainnet, chain 42220, Forno RPC,
+//   explorer https://explorer.celo.org, latest block 81138707.
+// - celo-mcp get_token_balance → USDC 0xcebA…18C has 6 decimals; gateway
+//   payTo 0x20fa…333B holds 8.44 USDC on mainnet (active gateway wallet).
+// - eth_getCode (Forno) → both ERC-8004 registries + both USDC contracts
+//   have contract code; provider registration files reference
+//   eip155:42220:0x8004A169FB4a3325136EB29fA0ceB6D2e539a432 with x402Support:true.
+// - Sepolia settlement txs verified via Forno receipts (status 0x1) and
+//   celo-sepolia.blockscout.com (indexing lags a few minutes).
 
 export const CELO_NETWORKS = {
   mainnet: {
@@ -8,7 +16,7 @@ export const CELO_NETWORKS = {
     chainId: 42220,
     usdc: "0xcebA9300f2b948710d2653dD7B07f33A8B32118C",
     facilitator: "https://api.x402.celo.org",
-    explorer: "https://celoscan.io",
+    explorer: "https://explorer.celo.org", // celo-mcp get_network_status block_explorer_url
     gateway: "https://gateway.usebuy.ai",
   },
   testnet: {
