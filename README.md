@@ -1,5 +1,8 @@
 # Speak2Agent — Voice-to-AI-Agent Builder Powered by Celo x402
 
+> **Live demo:** `https://speak2agent.vercel.app` _(placeholder — deploy with `vercel --prod` and replace this line; the app starts cleanly with no secrets configured, paid paths stay disabled until `BUY_*`/`CELO_NETWORK` are set)_
+> **Onchain activity (Celo Sepolia testnet):** no custom contracts deployed — settlement happens through the buy gateway in USDC via x402. Sample settled payments with explorer links are listed under [Onchain activity](#onchain-activity-celo-sepolia-testnet) below.
+
 Describe an AI agent in natural language (voice-dictated via Wispr Flow or typed).
 Speak2Agent turns it into a structured, budget-guarded blueprint, dry-runs it,
 then executes a **real paid task**: the agent buys an external service through the
@@ -39,9 +42,49 @@ Demo walkthrough (5 minutes, no real money):
    hackathon checklist.
 
 ```bash
-npm test    # 14 unit tests (schemas, state machine, budgets, 402 parsing)
+npm test    # 14 unit tests (schemas, state machine, budgets, 402 parsing) — fully offline, no network or secrets
 npm run build
 ```
+
+## Onchain activity (Celo Sepolia, testnet)
+
+Speak2Agent deploys **no custom contracts**. All value moves as USDC through the
+buy gateway's x402 settlement on Celo Sepolia (chain 11142220). Explorer root:
+`https://celo-sepolia.blockscout.com`.
+
+Settled sandbox payments ($0.005 USDC each, receipt `status: 0x1`):
+
+- `0xc89fc14c8bb8c01c7b9791830328dd4fc9da39fabac64f4ed6a6cdfe90f0a649`
+  → https://celo-sepolia.blockscout.com/tx/0xc89fc14c8bb8c01c7b9791830328dd4fc9da39fabac64f4ed6a6cdfe90f0a649
+- `0xe139a1fb76ea28ea50474766f5889216ef8336652751c10675e07cd347ab324c`
+  → https://celo-sepolia.blockscout.com/tx/0xe139a1fb76ea28ea50474766f5889216ef8336652751c10675e07cd347ab324c
+
+Referenced contract addresses (nothing deployed by this repo — all pre-existing):
+
+| What | Chain | Address |
+| --- | --- | --- |
+| USDC (settlement token) | Celo Sepolia | `0x01C5C0122039549AD1493B8220cABEdD739BC44E` |
+| USDC | Celo Mainnet | `0xcebA9300f2b948710d2653dD7B07f33A8B32118C` |
+| Buy gateway payTo wallet | Celo | `0x20faAca5F980E29639A0FCC6dcA6988E18ed333B` |
+| ERC-8004 identity registry | Celo Mainnet (from live gateway catalog) | `0x8004A169FB4a3325136EB29fA0ceB6D2e539a432` |
+| ERC-8004 reputation registry | Celo Mainnet (from live gateway catalog) | `0x8004BAa17C55a88189AE136b182e5fdA19dE9b63` |
+
+The real payment path is `src/lib/x402pay.ts` (`buyGatewayCall` → official
+`@celo/buy curl --max-amount`), invoked from the execution engine
+(`src/lib/engine.ts`) and surfaced in the UI's Runs tab with explorer links.
+The Identity tab prepares ERC-8004 metadata locally; onchain registration is a
+manual wallet step and has not been submitted yet.
+
+## Reproducing the review (for judges, offline-clean)
+
+```bash
+npm install
+npm test     # must pass with no .env, no network for dry-run paths
+npm run dev  # http://localhost:3000 — works with zero secrets; paid buttons explain what is missing
+```
+
+Live (paid) runs additionally need the sandbox wallet from "Payment setup"
+below; without it the app starts fine and only the paid step errors cleanly.
 
 ## Payment setup (sandbox — test funds, no real money)
 
